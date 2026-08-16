@@ -1,0 +1,7 @@
+:root{
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;
+--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;--space-24:96px;--space-30:120px;--space-40:160px;
+--container-max:1180px;--container-gutter:50px;
+--section-y:120px;--section-y-sm:80px;
+--grid-columns:12; /* @kind other */--grid-gap:20px;
+}

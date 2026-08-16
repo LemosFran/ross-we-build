@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rosso Maquinarias — Transporte de maquinaria, grúas y montajes industriales</title>
+<meta name="description" content="Transporte de maquinaria agrícola y pesada, montajes industriales, servicio de grúa y de autoelevador. Flota propia, operadores propios, guardia 24/7.">
+<link rel="stylesheet" href="_ds/rosso-maquinarias-design-system-202f2f75-04e8-4e85-8497-19ecedafd340/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/rosso-maquinarias-design-system-202f2f75-04e8-4e85-8497-19ecedafd340/tokens/colors.css">
+<link rel="stylesheet" href="_ds/rosso-maquinarias-design-system-202f2f75-04e8-4e85-8497-19ecedafd340/tokens/typography.css">
+<link rel="stylesheet" href="_ds/rosso-maquinarias-design-system-202f2f75-04e8-4e85-8497-19ecedafd340/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/rosso-maquinarias-design-system-202f2f75-04e8-4e85-8497-19ecedafd340/tokens/effects.css">
+<link rel="stylesheet" href="_ds/rosso-maquinarias-design-system-202f2f75-04e8-4e85-8497-19ecedafd340/tokens/motion.css">
+<link rel="stylesheet" href="_ds/rosso-maquinarias-design-system-202f2f75-04e8-4e85-8497-19ecedafd340/tokens/base.css">
+<link rel="stylesheet" href="_ds/rosso-maquinarias-design-system-202f2f75-04e8-4e85-8497-19ecedafd340/styles.css">
+<style>
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:76px}
+a{color:var(--text-strong);text-decoration:none}
+a:hover{color:var(--accent)}
+.wrap{width:100%;max-width:var(--container-max);margin:0 auto;padding:0 var(--container-gutter)}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.hstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:20px}
+.svc{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:64px;align-items:start;margin-top:46px}
+.trust{display:grid;gap:22px;padding:34px 0}
+.trust-row li:hover img{opacity:1}
+.trust-label{font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--text-muted);margin:0}
+.trust-row{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));align-items:center;justify-items:center;gap:clamp(14px,2.4vw,40px)}
+.trust-row img{display:block;width:auto;height:auto;max-height:var(--lh);max-width:100%;opacity:.58;filter:grayscale(1);transition:var(--transition-color);transition-property:opacity}
+.trust-row li{width:100%;display:flex;justify-content:center}
+.tst{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:60px;align-items:start;margin-top:46px}
+.about{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:60px;align-items:start;margin-top:46px}
+.about-fig{position:relative;padding-bottom:64px}
+.about-fig>img{display:block;width:100%;height:560px;object-fit:cover;object-position:center 22%;clip-path:polygon(44px 0,100% 0,100% 100%,0 100%,0 44px)}
+.about-panel{position:absolute;left:0;right:24px;bottom:0}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.contact{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:64px;align-items:start}
+.form2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.fl-title{min-height:2.24em}
+@media(max-width:1040px){.fl-title{min-height:0}}
+select:focus-visible{border-color:var(--accent)}
+@keyframes rvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.rv-in{animation:rvIn var(--dur-reveal) var(--ease-mech) both}
+@media(prefers-reduced-motion:reduce){.rv-in{animation:none}html{scroll-behavior:auto}}
+@media(max-width:1040px){
+.stripes-dec{display:none}
+.svc,.contact,.tst{grid-template-columns:minmax(0,1fr);gap:44px}
+.steps{grid-template-columns:minmax(0,1fr);gap:34px}
+.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:940px){
+:root{--container-gutter:24px;--section-y:80px;--section-y-sm:64px;--fs-display-xl:46px;--fs-display-lg:38px;--fs-display-md:30px;--fs-display-sm:26px;--fs-tab:20px;--fs-link-lg:24px}
+.hero-body{padding-top:52px!important;padding-bottom:40px!important}
+.steps>*{border-left:none!important;border-top:1px solid var(--border-on-ink);padding:22px 0 0!important}
+}
+@media(max-width:700px){
+.g3,.g4,.form2{grid-template-columns:minmax(0,1fr)}
+.about{grid-template-columns:minmax(0,1fr);gap:36px}
+.trust{grid-template-columns:minmax(0,1fr);gap:18px;padding:28px 0}
+.trust-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 18px}
+.trust-row img{max-height:var(--lh)}
+.about-fig>img{height:420px}
+.hstats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:8px;border-top:none!important}
+.hstats>*{border-left:none!important;border-top:1px solid var(--border-on-ink);padding:18px 0 0!important}
+}
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="_ds/rosso-maquinarias-design-system-202f2f75-04e8-4e85-8497-19ecedafd340/_ds_bundle.js"></script>
+<script src="rosso-data.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="rosso-parts.jsx"></script>
+<script type="text/babel" src="rosso-parts-b.jsx"></script>
+<script type="text/babel" src="rosso-app.jsx"></script>
+</body>
+</html>

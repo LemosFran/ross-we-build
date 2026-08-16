@@ -1,0 +1,8 @@
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);font-size:var(--fs-body);line-height:var(--lh-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4{font-family:var(--font-display);text-transform:uppercase;font-weight:700;line-height:var(--lh-display);letter-spacing:var(--ls-display);color:var(--text-strong);margin:0}
+p{margin:0;text-wrap:pretty}
+a{color:var(--text-strong);text-decoration:none;transition:var(--transition-color)}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:var(--red-600);color:#fff}
