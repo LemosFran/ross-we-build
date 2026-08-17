@@ -141,7 +141,9 @@ export function RoadSequence() {
         </noscript>
         <div className={"road-sequence__cta" + (ctaVisible ? " is-visible" : "")} aria-hidden={!ctaVisible}>
           <p>Tu operación también puede avanzar.</p>
-          <a href="#contacto" onClick={go("#contacto")} tabIndex={ctaVisible ? 0 : -1}>Hablemos de tu próximo traslado</a>
+          <Btn variant="solid" size="lg" cut href="#contacto" onClick={go("#contacto")} tabIndex={ctaVisible ? 0 : -1}>
+            Hablemos de tu próximo traslado
+          </Btn>
         </div>
       </div>
     </section>

@@ -273,16 +273,8 @@
   color: var(--text-on-ink);
 }
 
-.road-sequence__cta a {
+.road-sequence__cta > a {
   justify-self: center;
-  border-bottom: 1px solid var(--accent);
-  padding-bottom: 0.3rem;
-  color: var(--text-on-ink);
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
-  letter-spacing: 0.1em;
-  text-decoration: none;
-  text-transform: uppercase;
 }
 
 @media (prefers-reduced-motion: reduce) {

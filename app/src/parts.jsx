@@ -123,9 +123,9 @@ const HERO_TOTAL = 240;
 const HERO_STRIDES = [40, 16, 8, 4, 2, 1];
 const HERO_BEATS_THRESHOLDS = [0.10, 0.38, 0.68, 0.97];
 const HERO_RAIL = [
-  { label: "01 — Apoyo", line: "El equipo entra en posición." },
-  { label: "02 — Izaje", line: "La carga sube." },
-  { label: "03 — Avance", line: "El camión sale del playón." },
+  { label: "01 — Apoyo", line: "Estabilizadores en posición, listos para izar." },
+  { label: "02 — Izaje", line: "La grúa levanta la carga con precisión." },
+  { label: "03 — Avance", line: "El carretón sale con el equipo asegurado." },
 ];
 
 function heroFrameSrc(isMobile) {
@@ -194,8 +194,8 @@ export function Hero({ onMenu, narrow }) {
 
         <div className={"scroll-hero__copy" + (promptVisible ? "" : " is-hidden")}>
           <Eyebrow>Transporte y montaje industrial</Eyebrow>
-          <Heading as="h1" size="xl" tone="ink" className="scroll-hero__title">La maniobra<br />en marcha</Heading>
-          <p className="scroll-hero__subtitle">Deslizá para recorrer cada momento.</p>
+          <Heading as="h1" size="xl" tone="ink" className="scroll-hero__title">Movemos lo que<br />nadie más mueve</Heading>
+          <p className="scroll-hero__subtitle">Deslizá para ver la maniobra, paso a paso.</p>
         </div>
 
         <div className={"scroll-hero__scroll" + (promptVisible ? "" : " is-hidden")}>
