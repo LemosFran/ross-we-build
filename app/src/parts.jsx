@@ -123,9 +123,9 @@ const HERO_TOTAL = 240;
 const HERO_STRIDES = [40, 16, 8, 4, 2, 1];
 const HERO_BEATS_THRESHOLDS = [0.10, 0.38, 0.68, 0.97];
 const HERO_RAIL = [
-  { label: "01 — Apoyo", line: "Estabilizadores en posición, listos para izar." },
-  { label: "02 — Izaje", line: "La grúa levanta la carga con precisión." },
-  { label: "03 — Avance", line: "El carretón sale con el equipo asegurado." },
+  { label: "01 — Apoyo", line: "Operadores propios, certificados en izaje." },
+  { label: "02 — Izaje", line: "Precisión milimétrica, sin subcontratar riesgos." },
+  { label: "03 — Avance", line: "Guardia operativa, 24 horas los 7 días." },
 ];
 
 function heroFrameSrc(isMobile) {
@@ -195,7 +195,7 @@ export function Hero({ onMenu, narrow }) {
         <div className={"scroll-hero__copy" + (promptVisible ? "" : " is-hidden")}>
           <Eyebrow>Transporte y montaje industrial</Eyebrow>
           <Heading as="h1" size="xl" tone="ink" className="scroll-hero__title">Movemos lo que<br />nadie más mueve</Heading>
-          <p className="scroll-hero__subtitle">Deslizá para ver la maniobra, paso a paso.</p>
+          <p className="scroll-hero__subtitle">Profesionales altamente capacitados, con respaldo operativo las 24 horas.</p>
         </div>
 
         <div className={"scroll-hero__scroll" + (promptVisible ? "" : " is-hidden")}>
