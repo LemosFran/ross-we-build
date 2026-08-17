@@ -1,0 +1,23 @@
+:root{
+/* the brand is square — radius is reserved for pills only */
+--radius-none:0px;--radius-pill:999px;
+/* diagonal corner cut — the core structural motif */
+--cut-sm:20px;--cut-md:44px;--cut-lg:80px;--cut-xl:120px;
+--clip-cut-tr:polygon(0 0,calc(100% - var(--cut-md)) 0,100% var(--cut-md),100% 100%,0 100%); /* @kind other */
+--clip-cut-bl:polygon(0 0,100% 0,100% 100%,var(--cut-md) 100%,0 calc(100% - var(--cut-md))); /* @kind other */
+--clip-cut-diag:polygon(0 0,calc(100% - var(--cut-lg)) 0,100% var(--cut-lg),100% 100%,var(--cut-lg) 100%,0 calc(100% - var(--cut-lg))); /* @kind other */
+/* borders */
+--border-width:1px; /* @kind other */--border-width-strong:2px; /* @kind other */
+--border-hairline-rule:1px solid var(--border-hairline); /* @kind other */
+/* elevation: the brand is flat. shadows only for floating overlays. */
+--shadow-none:none;
+--shadow-overlay:0 24px 60px rgba(21,29,36,.28);
+--shadow-bar:0 2px 24px rgba(21,29,36,.18);
+/* glass */
+--blur-bar:saturate(120%) blur(10px); /* @kind other */
+--glass-ink:rgba(32,42,51,.62); /* @kind other */
+/* patterns */
+--dot-size:1.2px; /* @kind other */--dot-step:50px; /* @kind other */
+--dot-grid:radial-gradient(var(--dot-color) var(--dot-size),transparent var(--dot-size)); /* @kind other */
+--dot-grid-on-ink:radial-gradient(var(--dot-color-on-ink) var(--dot-size),transparent var(--dot-size)); /* @kind other */
+}

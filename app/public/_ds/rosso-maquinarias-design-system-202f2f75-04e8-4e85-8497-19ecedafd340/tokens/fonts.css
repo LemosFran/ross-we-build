@@ -1,0 +1,11 @@
+@font-face{font-family:"TT Octosquares";src:url("../assets/fonts/TTOctosquares-CompressedBold.ttf") format("truetype");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Red Hat Display";src:url("../assets/fonts/RedHatDisplay-Regular.otf") format("opentype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Red Hat Display";src:url("../assets/fonts/RedHatDisplay-Medium.otf") format("opentype");font-weight:500 700;font-style:normal;font-display:swap}
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap");
+:root{
+--font-display:"TT Octosquares","Eurostile Extended",sans-serif;
+--font-body:"Red Hat Display","Helvetica Neue",Arial,sans-serif;
+--font-mono:"JetBrains Mono",ui-monospace,monospace;
+--display-stretch:100; /* @kind font */
+--display-width:"wdth" 100; /* @kind font */
+}

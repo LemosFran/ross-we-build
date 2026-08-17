@@ -1,0 +1,28 @@
+:root{
+/* base — ink (azul grisado): superficies oscuras y texto */
+--ink-900:#151d24;--ink-800:#202a33;--ink-700:#29343d;--ink-600:#32404d;--ink-500:#46545f;
+/* base — celeste del isotipo */
+--blue-300:#94b3e8;
+/* base — neutral */
+--grey-600:#5f666c;--grey-500:#797f85;--grey-400:#a5a9ad;--grey-300:#b4b9c9;--grey-200:#d1d3d4;--grey-100:#e8e9ea;--grey-50:#f6f7f7;--white:#ffffff;
+/* base — rosso (accent) */
+--red-700:#8f1900;--red-600:#b41f00;--red-500:#d4300e;--red-100:#f6dcd6;
+/* base — mint (superficie secundaria; celeste pálido derivado del isotipo) */
+--mint-200:#b7ccee;--mint-100:#dbe6f8;--mint-50:#edf2fc;
+
+/* semantic — text */
+--text-strong:var(--ink-800);--text-body:var(--ink-800);--text-muted:var(--grey-500);--text-disabled:var(--grey-300);
+--text-accent:var(--red-600);--text-accent-on-ink:var(--red-500);--text-on-ink:var(--white);--text-on-ink-muted:var(--grey-400);
+/* semantic — surface */
+--surface-page:var(--white);--surface-sunken:var(--grey-50);--surface-ink:var(--ink-800);--surface-ink-raised:var(--ink-600);
+--surface-mint:var(--mint-100);--surface-accent:var(--red-600);
+/* semantic — border */
+--border-hairline:rgba(32,42,51,.14);--border-strong:rgba(32,42,51,.55);--border-on-ink:rgba(255,255,255,.24);--border-accent:var(--red-600);
+/* semantic — decoration */
+--dot-color:rgba(32,42,51,.12);--dot-color-on-ink:rgba(255,255,255,.16);
+--stripe-on-ink:var(--ink-600);
+--scrim-ink:rgba(32,42,51,.72);--scrim-ink-soft:rgba(32,42,51,.45);
+/* semantic — interaction */
+--accent:var(--red-600);--accent-hover:var(--red-500);--accent-press:var(--red-700);
+--focus-ring:var(--red-600);
+}
