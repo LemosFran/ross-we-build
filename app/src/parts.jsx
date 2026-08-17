@@ -187,9 +187,24 @@ export function Hero({ onMenu, narrow }) {
         </noscript>
 
         <div className="wrap" style={{ position: "relative", zIndex: 2, paddingTop: 26 }}>
-          <SiteHeader tone="ink" links={narrow ? [] : R.NAV.map((n) => n[0])} menuLabel={narrow ? "Menú" : null} onMenu={onMenu}
-            onLink={(label) => go((R.NAV.find((n) => n[0] === label) || [])[1] || "#top")()}
-            onBrand={go("#top")} onCta={go("#contacto")} ctaLabel="Pedir cotización" />
+          {narrow ? (
+            // SiteHeader always renders its CTA button alongside the menu button —
+            // fine on desktop, but the two don't fit together on narrow viewports
+            // (the CTA overflows the screen edge). Mirror StickyBar's own
+            // menu-only narrow layout instead of asking SiteHeader for both.
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", minHeight: 64 }}>
+              <a href="#top" onClick={go("#top")} aria-label="Rosso Maquinarias, ir al inicio" style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
+                <Wordmark variant="badge" size={50} tone="ink" />
+              </a>
+              <button onClick={onMenu} aria-label="Abrir menú" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "10px 4px", background: "none", border: "none", cursor: "pointer", color: "var(--text-strong)", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "var(--fs-nav)", letterSpacing: "var(--ls-nav)", textTransform: "uppercase" }}>
+                <Icon name="align-left" size={20} />Menú
+              </button>
+            </div>
+          ) : (
+            <SiteHeader tone="ink" links={R.NAV.map((n) => n[0])}
+              onLink={(label) => go((R.NAV.find((n) => n[0] === label) || [])[1] || "#top")()}
+              onBrand={go("#top")} onCta={go("#contacto")} ctaLabel="Pedir cotización" />
+          )}
         </div>
 
         <div className={"scroll-hero__copy" + (promptVisible ? "" : " is-hidden")}>
