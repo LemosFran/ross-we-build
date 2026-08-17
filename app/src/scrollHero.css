@@ -1,0 +1,290 @@
+/* ═══════════════════════════════════════════════════════════
+   Scroll-driven hero + road sequence
+   Ported from LemosFran/scroll-sequence, restyled on the Rosso
+   Maquinarias design-system tokens (see tokens/*.css).
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --hero-track: 420svh; /* scroll distance the pinned hero consumes */
+}
+
+@media (max-width: 820px) {
+  :root { --hero-track: 360svh; }
+}
+
+/* ─── Hero, pinned to the viewport ───────────────────────── */
+
+.scroll-hero {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+
+.scroll-hero__canvas,
+.scroll-hero__fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Invisible track: its height is the hero's scroll distance. */
+.scroll-hero-track {
+  position: relative;
+  z-index: 0;
+  height: var(--hero-track);
+  pointer-events: none;
+}
+
+/* Paper veil: dissolves the frame's high-key background into the page
+   background so the canvas reads as part of the page, not a photo pasted
+   on top of it. */
+.scroll-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 46%;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--surface-sunken) 0%, transparent) 0%,
+    color-mix(in srgb, var(--surface-sunken) 38%, transparent) 46%,
+    color-mix(in srgb, var(--surface-sunken) 82%, transparent) 74%,
+    var(--surface-sunken) 100%
+  );
+}
+
+.scroll-hero__copy {
+  position: absolute;
+  z-index: 2;
+  top: clamp(6.5rem, 15vh, 10.5rem);
+  left: var(--container-gutter);
+  display: grid;
+  gap: var(--space-2);
+  max-width: 640px;
+  pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease-mech), transform var(--dur-slow) var(--ease-mech);
+}
+
+.scroll-hero__copy.is-hidden {
+  opacity: 0;
+  transform: translateY(-0.5rem);
+}
+
+.scroll-hero__title {
+  margin-top: var(--space-3);
+  line-height: 0.94;
+}
+
+.scroll-hero__subtitle {
+  margin: 0;
+  max-width: 320px;
+  color: var(--text-body);
+  font-size: var(--fs-body-lg);
+}
+
+.scroll-hero__scroll {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: clamp(1.5rem, 4vh, 3.5rem);
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease-mech), transform var(--dur-slow) var(--ease-mech);
+}
+
+.scroll-hero__scroll.is-hidden {
+  opacity: 0;
+  transform: translate(-50%, 0.5rem);
+}
+
+/* ─── Typographic rail: hero title and the three beats share one
+   grid cell and hand off to each other as the scroll progresses. ─── */
+.scroll-hero__rail {
+  position: absolute;
+  z-index: 2;
+  inset: auto var(--container-gutter) calc(var(--container-gutter) + 8px) var(--container-gutter);
+  display: grid;
+  pointer-events: none;
+}
+
+.scroll-hero__beat {
+  margin: 0;
+  grid-area: 1 / 1;
+  align-self: end;
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition: opacity var(--dur-slow) ease, transform var(--dur-slow) var(--ease-mech);
+}
+
+.scroll-hero__beat.is-live {
+  opacity: 1;
+  transform: none;
+}
+
+.scroll-hero__beat-label {
+  margin: 0 0 var(--space-2);
+  padding-left: 2.75rem;
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+}
+
+.scroll-hero__beat-label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 2rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+.scroll-hero__beat-line {
+  margin: 0;
+  max-width: 15ch;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-heavy);
+  font-size: clamp(1.75rem, 5.5vw, var(--fs-display-lg));
+  line-height: 0.96;
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--text-strong);
+}
+
+/* ─── Preload chrome ─── */
+.scroll-hero__loader {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: var(--space-3);
+  justify-items: center;
+  background: var(--surface-sunken);
+  transition: opacity var(--dur-slow) ease, visibility var(--dur-slow);
+}
+
+.scroll-hero__loader.is-done { opacity: 0; visibility: hidden; }
+
+.scroll-hero__loader-bar {
+  width: min(15rem, 50vw);
+  height: 1px;
+  background: var(--border-hairline);
+  overflow: hidden;
+}
+
+.scroll-hero__loader-bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--dur-base) linear;
+}
+
+.scroll-hero__loader-text {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Overlay: everything after the hero, rising to cover it ─── */
+.page-overlay {
+  position: relative;
+  z-index: 1;
+  background: var(--surface-page);
+  box-shadow: 0 -24px 56px -16px rgba(21, 29, 36, 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hero__copy,
+  .scroll-hero__scroll,
+  .scroll-hero__beat { transition-duration: 0.01ms; }
+}
+
+/* ═══════════════ Road sequence, sticky mid-page ═══════════ */
+
+.road-sequence {
+  position: relative;
+  height: 360svh;
+  background: var(--surface-ink);
+}
+
+@media (max-width: 820px) {
+  .road-sequence { height: 300svh; }
+}
+
+.road-sequence__sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.road-sequence__canvas,
+.road-sequence__fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.road-sequence__cta {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  width: min(32rem, calc(100% - var(--container-gutter) * 2));
+  margin: auto;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(1.5rem);
+  transition: opacity var(--dur-slow) ease, transform var(--dur-slow) var(--ease-mech);
+}
+
+.road-sequence__cta.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.road-sequence__cta p {
+  margin: 0 0 var(--space-5);
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-heavy);
+  font-size: clamp(1.5rem, 3vw, var(--fs-display-md));
+  line-height: 0.96;
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--text-on-ink);
+}
+
+.road-sequence__cta a {
+  justify-self: center;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 0.3rem;
+  color: var(--text-on-ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .road-sequence__cta { transition-duration: 0.01ms; }
+}

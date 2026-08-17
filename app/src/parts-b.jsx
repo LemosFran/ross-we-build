@@ -1,5 +1,6 @@
 import React from "react";
 import { Reveal, go, R } from "./parts.jsx";
+import { useFrameSequence, clamp as clampProgress } from "./frameSequence.js";
 
 const { Section: S2, ClipPanel: CP, ArrowLink: AL, Button: Btn, Icon: Ic, NotchCard: NC, TextField: TF, InfoBlock: IB, SiteFooter: SF, DiagonalStripes: Stripes, Eyebrow: Eb } = window.RossoMaquinariasDesignSystem_202f2f;
 
@@ -102,6 +103,48 @@ export function Works() {
         ))}
       </div>
     </S2>
+  );
+}
+
+export const ROAD_TOTAL = 163;
+function roadFrameSrc(i) { return "assets/road-sequence/frames/ezgif-frame-" + String(i + 1).padStart(3, "0") + ".jpg"; }
+
+/** Sticky-pinned truck sequence, ported from LemosFran/scroll-sequence.
+    Unlike the hero (fixed + external track), this section pins itself via
+    `position: sticky` for the height of its own container. */
+export function RoadSequence() {
+  const canvasRef = React.useRef(null);
+  const stickyRef = React.useRef(null);
+  const sectionRef = React.useRef(null);
+  const [ctaVisible, setCtaVisible] = React.useState(false);
+
+  const progressFn = React.useCallback(() => {
+    const section = sectionRef.current;
+    if (!section) return 0;
+    const span = section.offsetHeight - window.innerHeight;
+    return span > 0 ? clampProgress(-section.getBoundingClientRect().top / span, 0, 1) : 0;
+  }, []);
+
+  useFrameSequence({
+    canvasRef, containerRef: stickyRef, observeRef: sectionRef,
+    total: ROAD_TOTAL, src: roadFrameSrc, focus: { x: 0.5, y: 0.5 }, concurrency: 6, ease: 0.14,
+    progress: progressFn,
+    onTick: React.useCallback((p) => setCtaVisible(p >= 0.84), []),
+  });
+
+  return (
+    <section ref={sectionRef} className="road-sequence" id="road-sequence" aria-label="Secuencia de camión en carretera">
+      <div ref={stickyRef} className="road-sequence__sticky">
+        <canvas ref={canvasRef} className="road-sequence__canvas" role="img" aria-label="Un camión recorre una carretera." />
+        <noscript>
+          <img className="road-sequence__fallback" src="assets/road-sequence/frames/ezgif-frame-082.jpg" alt="Un camión en la carretera." />
+        </noscript>
+        <div className={"road-sequence__cta" + (ctaVisible ? " is-visible" : "")} aria-hidden={!ctaVisible}>
+          <p>Tu operación también puede avanzar.</p>
+          <a href="#contacto" onClick={go("#contacto")} tabIndex={ctaVisible ? 0 : -1}>Hablemos de tu próximo traslado</a>
+        </div>
+      </div>
+    </section>
   );
 }
 

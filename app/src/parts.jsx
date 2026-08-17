@@ -1,5 +1,6 @@
 import React from "react";
 import { ROSSO } from "./data.js";
+import { useFrameSequence, clamp as clampProgress } from "./frameSequence.js";
 
 const DS = window.RossoMaquinariasDesignSystem_202f2f;
 const { SiteHeader, Section, TabNav, Button, ArrowLink, Heading, Eyebrow, Icon, ClipPanel, Wordmark, BrandGlyph, DiagonalStripes, ScrollCue, NotchCard, TextField, InfoBlock, SiteFooter } = DS;
@@ -43,9 +44,17 @@ export const go = (hash) => (e) => {
 export function StickyBar({ onMenu, narrow }) {
   const [on, set] = React.useState(false);
   React.useEffect(() => {
-    const h = () => set(window.scrollY > window.innerHeight * 0.85);
+    // The hero is pinned to the viewport for the whole scroll-driven sequence
+    // (see #hero-track), so the condensed bar should only reveal once that
+    // track has fully passed — not after one fixed viewport height.
+    const h = () => {
+      const track = document.getElementById("hero-track");
+      const threshold = track ? track.offsetHeight - window.innerHeight : window.innerHeight * 0.85;
+      set(window.scrollY > threshold);
+    };
     h(); window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
+    window.addEventListener("resize", h, { passive: true });
+    return () => { window.removeEventListener("scroll", h); window.removeEventListener("resize", h); };
   }, []);
   return (
     <div style={{
@@ -110,42 +119,107 @@ export function MobileMenu({ open, onClose }) {
   );
 }
 
+const HERO_TOTAL = 240;
+const HERO_STRIDES = [40, 16, 8, 4, 2, 1];
+const HERO_BEATS_THRESHOLDS = [0.10, 0.38, 0.68, 0.97];
+const HERO_RAIL = [
+  { label: "01 — Apoyo", line: "El equipo entra en posición." },
+  { label: "02 — Izaje", line: "La carga sube." },
+  { label: "03 — Avance", line: "El camión sale del playón." },
+];
+
+function heroFrameSrc(isMobile) {
+  const dir = isMobile ? "assets/hero-sequence/frames-mobile/" : "assets/hero-sequence/frames/";
+  return (i) => dir + "frame_" + String(i + 1).padStart(4, "0") + ".webp";
+}
+
+/** Scroll-driven crane sequence: 240 frames drawn to a canvas pinned to the
+    viewport, scrubbed by a 420svh invisible track (#hero-track). Ported from
+    LemosFran/scroll-sequence, restyled on the Rosso design tokens. */
 export function Hero({ onMenu, narrow }) {
+  const isMobile = useMedia("(max-width: 820px)");
+  const canvasRef = React.useRef(null);
+  const heroRef = React.useRef(null);
+  const trackRef = React.useRef(null);
+
+  const [promptVisible, setPromptVisible] = React.useState(true);
+  const [liveBeat, setLiveBeat] = React.useState(-1);
+  const [loadPct, setLoadPct] = React.useState(0);
+  const [loaderDone, setLoaderDone] = React.useState(false);
+
+  const focus = isMobile ? { x: 0.5, y: 0.44 } : { x: 0.5, y: 0.5 };
+  const src = React.useMemo(() => heroFrameSrc(isMobile), [isMobile]);
+
+  const progressFn = React.useCallback(() => {
+    const track = trackRef.current, hero = heroRef.current;
+    if (!track || !hero) return 0;
+    const span = track.offsetHeight - hero.offsetHeight;
+    if (span <= 0) return 0;
+    return clampProgress(-track.getBoundingClientRect().top / span, 0, 1);
+  }, []);
+
+  useFrameSequence({
+    canvasRef, containerRef: heroRef, observeRef: trackRef,
+    total: HERO_TOTAL, src, focus, strides: HERO_STRIDES, concurrency: 8, ease: 0.14,
+    progress: progressFn,
+    onProgress: React.useCallback((ratio) => {
+      setLoadPct(Math.round(ratio * 100));
+      if (ratio >= 0.22) setLoaderDone(true);
+    }, []),
+    onTick: React.useCallback((p) => {
+      setPromptVisible(p < 0.045);
+      const b = HERO_BEATS_THRESHOLDS;
+      let live = -1;
+      if (p >= b[0] && p < b[1]) live = 0;
+      else if (p >= b[1] && p < b[2]) live = 1;
+      else if (p >= b[2] && p < b[3]) live = 2;
+      setLiveBeat(live);
+    }, []),
+  });
+
   return (
-    <section id="top" data-screen-label="Hero" style={{ position: "relative", minHeight: narrow ? "auto" : "94vh", display: "flex", flexDirection: "column", background: "var(--surface-ink)", overflow: "hidden" }}>
-      <img src="assets/photos/hero-flota-marcha.jpg" alt="Carretón de Rosso Maquinarias trasladando una grúa al atardecer" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 62%" }} />
-      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(21,29,36,.92),rgba(21,29,36,.74) 38%,rgba(21,29,36,.42) 72%,rgba(21,29,36,.35) 100%),linear-gradient(105deg,rgba(21,29,36,.86),rgba(21,29,36,.12) 72%)" }} />
-      <div aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: "var(--dot-grid-on-ink)", backgroundSize: "var(--dot-step) var(--dot-step)" }} />
-      <div className="wrap" style={{ position: "relative", zIndex: 2, paddingTop: 26 }}>
-        <SiteHeader tone="onInk" links={narrow ? [] : R.NAV.map((n) => n[0])} menuLabel={narrow ? "Menú" : null} onMenu={onMenu}
-          onLink={(label) => go((R.NAV.find((n) => n[0] === label) || [])[1] || "#top")()}
-          onBrand={go("#top")} onCta={go("#contacto")} ctaLabel="Pedir cotización" />
-      </div>
-      <div className="wrap hero-body" style={{ position: "relative", zIndex: 2, flex: 1, display: "grid", alignContent: "center", gap: 26, paddingTop: 72, paddingBottom: 64 }}>
-        <Reveal><Eyebrow tone="accentOnInk">Transporte y montaje industrial</Eyebrow></Reveal>
-        <Reveal delay={60}>
-          <Heading as="h1" size="xl" tone="onInk" style={{ lineHeight: 0.94, maxWidth: 900 }}>Movemos lo que<br />nadie más mueve</Heading>
-        </Reveal>
-        <Reveal delay={120}>
-          <p style={{ maxWidth: 520, color: "var(--text-on-ink)", fontSize: "var(--fs-body-lg)", opacity: 0.92 }}>Carretones de 3 a 6 ejes, grúas de 25 a 120 toneladas y autoelevadores con operadores propios. Los permisos, las escoltas y el seguro de carga los gestionamos nosotros.</p>
-        </Reveal>
-        <Reveal delay={180} style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 8 }}>
-          <Button variant="solid" size="lg" cut href="#contacto" onClick={go("#contacto")} style={{ minHeight: 56 }}>Pedir cotización</Button>
-          <Button variant="outlineOnInk" size="lg" href="#servicios" onClick={go("#servicios")} style={{ minHeight: 56 }}>Ver servicios</Button>
-        </Reveal>
-      </div>
-      <div className="wrap" style={{ position: "relative", zIndex: 2, paddingBottom: 34 }}>
-        <div className="hstats" style={{ borderTop: "1px solid var(--border-on-ink)" }}>
-          {R.STATS.map(([n, l], i) => (
-            <div key={l} style={{ padding: "22px 26px 0", borderLeft: i === 0 ? "none" : "1px solid var(--border-on-ink)" }}>
-              <div style={{ color: "var(--white)", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 40, lineHeight: 1 }}>{n}</div>
-              <p style={{ marginTop: 8, color: "var(--text-on-ink-muted)", fontSize: "var(--fs-body-sm)" }}>{l}</p>
-            </div>
+    <React.Fragment>
+      <section id="top" ref={heroRef} className="scroll-hero" data-screen-label="Hero">
+        <canvas ref={canvasRef} className="scroll-hero__canvas" role="img"
+          aria-label="Una grúa despliega estabilizadores, eleva una carga y un camión avanza por el playón." />
+        <noscript>
+          <img className="scroll-hero__fallback" src="assets/hero-sequence/frames/frame_0120.webp" alt="Grúa elevando una carga mientras un camión avanza." />
+        </noscript>
+
+        <div className="wrap" style={{ position: "relative", zIndex: 2, paddingTop: 26 }}>
+          <SiteHeader tone="ink" links={narrow ? [] : R.NAV.map((n) => n[0])} menuLabel={narrow ? "Menú" : null} onMenu={onMenu}
+            onLink={(label) => go((R.NAV.find((n) => n[0] === label) || [])[1] || "#top")()}
+            onBrand={go("#top")} onCta={go("#contacto")} ctaLabel="Pedir cotización" />
+        </div>
+
+        <div className={"scroll-hero__copy" + (promptVisible ? "" : " is-hidden")}>
+          <Eyebrow>Transporte y montaje industrial</Eyebrow>
+          <Heading as="h1" size="xl" tone="ink" className="scroll-hero__title">La maniobra<br />en marcha</Heading>
+          <p className="scroll-hero__subtitle">Deslizá para recorrer cada momento.</p>
+        </div>
+
+        <div className={"scroll-hero__scroll" + (promptVisible ? "" : " is-hidden")}>
+          <ScrollCue tone="ink" />
+        </div>
+
+        <div className="scroll-hero__rail" aria-hidden={liveBeat < 0}>
+          {HERO_RAIL.map((beat, i) => (
+            <figure key={beat.label} className={"scroll-hero__beat" + (i === liveBeat ? " is-live" : "")}>
+              <figcaption>
+                <p className="scroll-hero__beat-label">{beat.label}</p>
+                <p className="scroll-hero__beat-line">{beat.line}</p>
+              </figcaption>
+            </figure>
           ))}
         </div>
-      </div>
-      {!narrow && <ScrollCue style={{ position: "absolute", zIndex: 3, left: "50%", bottom: 150, transform: "translateX(-50%)" }} />}
-    </section>
+
+        <div className={"scroll-hero__loader" + (loaderDone ? " is-done" : "")} aria-hidden={loaderDone}>
+          <div className="scroll-hero__loader-bar"><i style={{ width: loadPct + "%" }} /></div>
+          <p className="scroll-hero__loader-text">{loadPct}% · cargando secuencia</p>
+        </div>
+      </section>
+      <div ref={trackRef} id="hero-track" className="scroll-hero-track" aria-hidden="true" />
+    </React.Fragment>
   );
 }
 
