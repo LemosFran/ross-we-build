@@ -120,6 +120,7 @@ export function MobileMenu({ open, onClose }) {
 }
 
 const HERO_TOTAL = 240;
+const HERO_MOBILE_TOTAL = 300;
 const HERO_STRIDES = [40, 16, 8, 4, 2, 1];
 const HERO_BEATS_THRESHOLDS = [0.10, 0.38, 0.68, 0.97];
 const HERO_RAIL = [
@@ -133,8 +134,8 @@ function heroFrameSrc(isMobile) {
   return (i) => dir + "frame_" + String(i + 1).padStart(4, "0") + ".webp";
 }
 
-/** Scroll-driven crane sequence: 240 frames drawn to a canvas pinned to the
-    viewport, scrubbed by a 420svh invisible track (#hero-track). Ported from
+/** Scroll-driven crane sequence: 240 desktop / 300 portrait mobile frames
+    drawn to a pinned canvas and scrubbed by #hero-track. Ported from
     LemosFran/scroll-sequence, restyled on the Rosso design tokens. */
 export function Hero({ onMenu, narrow }) {
   const isMobile = useMedia("(max-width: 820px)");
@@ -150,6 +151,11 @@ export function Hero({ onMenu, narrow }) {
   const focus = isMobile ? { x: 0.5, y: 0.44 } : { x: 0.5, y: 0.5 };
   const src = React.useMemo(() => heroFrameSrc(isMobile), [isMobile]);
 
+  React.useEffect(() => {
+    setLoadPct(0);
+    setLoaderDone(false);
+  }, [isMobile]);
+
   const progressFn = React.useCallback(() => {
     const track = trackRef.current, hero = heroRef.current;
     if (!track || !hero) return 0;
@@ -160,7 +166,8 @@ export function Hero({ onMenu, narrow }) {
 
   useFrameSequence({
     canvasRef, containerRef: heroRef, observeRef: trackRef,
-    total: HERO_TOTAL, src, focus, strides: HERO_STRIDES, concurrency: 8, ease: 0.14,
+    total: isMobile ? HERO_MOBILE_TOTAL : HERO_TOTAL,
+    src, focus, strides: HERO_STRIDES, concurrency: 8, ease: 0.14,
     progress: progressFn,
     onProgress: React.useCallback((ratio) => {
       setLoadPct(Math.round(ratio * 100));
@@ -183,7 +190,10 @@ export function Hero({ onMenu, narrow }) {
         <canvas ref={canvasRef} className="scroll-hero__canvas" role="img"
           aria-label="Una grúa despliega estabilizadores, eleva una carga y un camión avanza por el playón." />
         <noscript>
-          <img className="scroll-hero__fallback" src="assets/hero-sequence/frames/frame_0120.webp" alt="Grúa elevando una carga mientras un camión avanza." />
+          <picture>
+            <source media="(max-width: 820px)" srcSet="assets/hero-sequence/frames-mobile/frame_0150.webp" />
+            <img className="scroll-hero__fallback" src="assets/hero-sequence/frames/frame_0120.webp" alt="Grúa elevando una carga mientras un camión avanza." />
+          </picture>
         </noscript>
 
         <div className="wrap" style={{ position: "relative", zIndex: 2, paddingTop: 26 }}>

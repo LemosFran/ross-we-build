@@ -53,20 +53,26 @@ export function useFrameSequence({
       images: new Array(total), ready: new Uint8Array(total), count: 0,
       current: 0, drawn: -1, running: false, raf: 0,
     };
+    let disposed = false;
 
     function loadOne(i) {
+      if (disposed || state.ready[i]) return Promise.resolve();
       return new Promise((resolve) => {
         const img = new Image();
         img.decoding = "async";
         img.onload = () => {
           const done = () => {
+            if (disposed) { resolve(); return; }
             state.images[i] = img; state.ready[i] = 1; state.count++;
             onProgressRef.current && onProgressRef.current(state.count / total);
             resolve();
           };
           img.decode ? img.decode().then(done, done) : done();
         };
-        img.onerror = () => { state.count++; onProgressRef.current && onProgressRef.current(state.count / total); resolve(); };
+        img.onerror = () => {
+          if (!disposed) { state.count++; onProgressRef.current && onProgressRef.current(state.count / total); }
+          resolve();
+        };
         img.src = src(i);
       });
     }
@@ -74,7 +80,7 @@ export function useFrameSequence({
     function loadAll() {
       const queue = buildOrder(total, strides);
       let cursor = 0;
-      function next() { return cursor < queue.length ? loadOne(queue[cursor++]).then(next) : Promise.resolve(); }
+      function next() { return !disposed && cursor < queue.length ? loadOne(queue[cursor++]).then(next) : Promise.resolve(); }
       return Promise.all(Array.from({ length: concurrency }, next));
     }
 
@@ -135,14 +141,15 @@ export function useFrameSequence({
     }
 
     resize();
-    loadOne(0).then(() => { resize(); draw(0); loadAll(); });
+    loadOne(0).then(() => { if (!disposed) { resize(); draw(0); loadAll(); } });
 
     return () => {
+      disposed = true;
       stop();
       window.removeEventListener("resize", onResize);
       clearTimeout(resizeTimer);
       if (io) io.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [total]);
+  }, [total, src, focus.x, focus.y]);
 }
